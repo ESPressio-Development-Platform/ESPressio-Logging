@@ -54,7 +54,9 @@ The default `Logger` obtains monotonic time from an ESPressio Timing `StopwatchC
 
 `ILogSink::Accept(const LogRecordLease&)` receives the same logical record. `LogRecordLease::View()` is always available. `LogRecordLease::IsRetainable()` tells a Sink whether a durable owner exists, and `Retain()` acquires an intrusive shared reference without duplicating the payload. A Sink must never store references from a non-retainable lease after `Accept()` returns.
 
-`ISharedLogRecord` / `SharedLogRecordBase` provide Event-style intrusive lifetime semantics for records deliberately created as durable objects. Multiple asynchronous Sinks can therefore share the same owned object rather than cloning it. A Sink is still encouraged to encode/materialise directly into its final bounded queue representation when that is cheaper than retaining the semantic record.
+`ISharedLogRecord` / `SharedLogRecord<TDerived, TMemoryPolicy>` provide Event-style intrusive lifetime semantics for records deliberately created as durable objects. `MakeSharedLogRecord(...)` allocates such records through the active `ESPressio-System` memory provider so construction and final intrusive release use the same memory policy/provider. Multiple asynchronous Sinks can therefore share the same owned object rather than cloning it. A Sink is still encouraged to encode/materialise directly into its final bounded queue representation when that is cheaper than retaining the semantic record.
+
+Router dispatch holds a shared topology lock while invoking Sink eligibility/acceptance. Registration and unregistration take the corresponding exclusive lock so `UnregisterSink()` cannot return while another caller is still executing that Sink through the Router. Consequently, a Sink must not synchronously register or unregister Logging topology from inside its own `IsEnabled()` or `Accept()` call; topology changes should occur outside that dispatch call stack.
 
 ## Observable state changes
 
