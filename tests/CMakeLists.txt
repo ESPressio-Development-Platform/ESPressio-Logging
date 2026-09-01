@@ -10,6 +10,7 @@ find_package(Threads REQUIRED)
 
 add_executable(test_logging test_logging.cpp)
 target_include_directories(test_logging PRIVATE
+    stubs
     ../src
     ../../ESPressio-System/src
     ../../ESPressio-Observable/src
