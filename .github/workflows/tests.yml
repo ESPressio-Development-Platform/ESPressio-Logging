@@ -1,0 +1,112 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  host-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ESPressio-Logging
+      - uses: actions/checkout@v4
+        with:
+          repository: ESPressio-Development-Platform/ESPressio-System
+          ref: feature/1-system-memory-policy
+          path: ESPressio-System
+      - uses: actions/checkout@v4
+        with:
+          repository: ESPressio-Development-Platform/ESPressio-Observable
+          ref: feature/16-rtti-free-observer-registry
+          path: ESPressio-Observable
+      - uses: actions/checkout@v4
+        with:
+          repository: ESPressio-Development-Platform/ESPressio-Timing
+          ref: feature/29-platform-clock-abstractions
+          path: ESPressio-Timing
+      - uses: actions/checkout@v4
+        with:
+          repository: ESPressio-Development-Platform/ESPressio-Units
+          ref: main
+          path: ESPressio-Units
+      - name: Configure
+        run: cmake -S ESPressio-Logging/tests -B build
+      - name: Build
+        run: cmake --build build --parallel
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+  esp32-compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: project/ESPressio-Logging
+      - uses: actions/checkout@v4
+        with:
+          repository: ESPressio-Development-Platform/ESPressio-System
+          ref: feature/1-system-memory-policy
+          path: project/dependencies/ESPressio-System
+      - uses: actions/checkout@v4
+        with:
+          repository: ESPressio-Development-Platform/ESPressio-Observable
+          ref: feature/16-rtti-free-observer-registry
+          path: project/dependencies/ESPressio-Observable
+      - uses: actions/checkout@v4
+        with:
+          repository: ESPressio-Development-Platform/ESPressio-Timing
+          ref: feature/29-platform-clock-abstractions
+          path: project/dependencies/ESPressio-Timing
+      - uses: actions/checkout@v4
+        with:
+          repository: ESPressio-Development-Platform/ESPressio-Units
+          ref: main
+          path: project/dependencies/ESPressio-Units
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install PlatformIO
+        run: pip install platformio
+      - name: Create compile project
+        shell: bash
+        run: |
+          mkdir -p project/compile/src
+          cat > project/compile/platformio.ini <<'EOF'
+          [env:esp32]
+          platform = espressif32
+          board = esp32dev
+          framework = arduino
+          build_flags =
+              -std=gnu++17
+              -fno-rtti
+              -DESPRESSIO_LOGGING_ENABLE_TRACE=0
+              -DESPRESSIO_LOGGING_ENABLE_DEBUG=0
+          build_unflags =
+              -std=gnu++11
+              -frtti
+          lib_ldf_mode = deep+
+          lib_deps =
+              ../dependencies/ESPressio-System
+              ../dependencies/ESPressio-Observable
+              ../dependencies/ESPressio-Units
+              ../dependencies/ESPressio-Timing
+              ../ESPressio-Logging
+          EOF
+          cat > project/compile/src/main.cpp <<'EOF'
+          #include <Arduino.h>
+          #include <ESPressio_Logging.hpp>
+
+          inline constexpr auto TestCategory =
+              ESPressio::Logging::LogCategory::Named("CompileTest");
+
+          void setup() {
+              auto& logger = ESPressio::Logging::Logger::GetInstance();
+              (void)logger.Router().GetSinkCount();
+              ESPRESSIO_LOG_DEBUG(TestCategory, "compiled out");
+          }
+          void loop() {}
+          EOF
+      - name: Compile ESP32 Logging core without RTTI
+        run: pio run -d project/compile

@@ -1,0 +1,17 @@
+{
+  "name": "ESPressio-Logging",
+  "description": "Platform-neutral, zero-copy-friendly structured logging abstractions for ESPressio applications",
+  "keywords": "logging,logger,structured logging,diagnostics,sink,routing,espressio",
+  "authors": {"name": "Simon J. Stuart", "maintainer": true, "url": "https://espressio.org"},
+  "build": {"flags": ["-std=gnu++17", "-DESPRESSIO_LOGGING"]},
+  "repository": {"type": "git", "url": "https://github.com/ESPressio-Development-Platform/ESPressio-Logging.git"},
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "frameworks": "arduino",
+  "platforms": "espressif32",
+  "dependencies": [
+    {"name": "ESPressio-System", "version": "https://github.com/ESPressio-Development-Platform/ESPressio-System.git#feature/1-system-memory-policy", "platforms": "*"},
+    {"name": "ESPressio-Observable", "version": "https://github.com/ESPressio-Development-Platform/ESPressio-Observable.git#feature/16-rtti-free-observer-registry", "platforms": "*"},
+    {"name": "ESPressio-Timing", "version": "https://github.com/ESPressio-Development-Platform/ESPressio-Timing.git#feature/29-platform-clock-abstractions", "platforms": "*"}
+  ]
+}
