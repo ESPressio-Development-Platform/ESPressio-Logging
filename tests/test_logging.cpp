@@ -31,7 +31,7 @@ public:
 class DurableRecord final : public SharedLogRecord<DurableRecord> {
 public:
     DurableRecord() {
-        _view.Timestamp = LogTimestamp{1, 2, Timing::ClockSynchronizationState::Unsynchronized};
+        _view.Timestamp = LogTimestamp{1, 2, ESPressio::Timing::ClockSynchronizationState::Unsynchronized};
         _view.Level = LogLevel::Error;
         _view.Category = Categories::Application;
         _view.Message = "durable";
@@ -69,7 +69,7 @@ int main() {
 
     const char message[] = "zero-copy";
     const LogField metadata[] = {{"channel", uint32_t{6}}, {"armed", true}};
-    const LogRecordView view{LogTimestamp{10, 20, Timing::ClockSynchronizationState::Unsynchronized}, LogLevel::Error, Category, std::string_view(message), Fields(metadata)};
+    const LogRecordView view{LogTimestamp{10, 20, ESPressio::Timing::ClockSynchronizationState::Unsynchronized}, LogLevel::Error, Category, std::string_view(message), Fields(metadata)};
     const LogRecordLease borrowed(view);
     assert(!borrowed.IsRetainable());
     assert(!borrowed.Retain());
