@@ -155,16 +155,16 @@ public:
     std::shared_ptr<LoggingObservable> GetObservable() const noexcept { return _observable; }
 
 private:
-        /**
-     * ESPressio Memory Audit
-     * Members:
-     * - Category (LogCategoryId): 8 bytes [0 bytes dynamic allocation]
-     * - Mask (LogLevelMask): 1 bytes [0 bytes dynamic allocation]
-     * - InUse (bool): 1 bytes [0 bytes dynamic allocation]
-     * Total Memory: 12 bytes [0 bytes dynamic allocation]
-     * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
-     * End ESPressio Memory Audit
-     */
+/**
+ * ESPressio Memory Audit
+ * Members:
+ * - Category (LogCategoryId): 8 bytes [0 bytes dynamic allocation]
+ * - Mask (LogLevelMask): 1 bytes [0 bytes dynamic allocation]
+ * - InUse (bool): 1 bytes [0 bytes dynamic allocation]
+ * Total Memory: 12 bytes [0 bytes dynamic allocation]
+ * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
+ * End ESPressio Memory Audit
+ */
 struct CategoryOverride {
         LogCategoryId Category = 0;
         LogLevelMask Mask = AllLogLevels;
