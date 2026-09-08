@@ -18,11 +18,30 @@ using LogFieldValue = std::variant<
     std::string_view
 >;
 
+/**
+ * ESPressio Memory Audit
+ * Members:
+ * - Name (std::string_view): 8 bytes [0 bytes dynamic allocation]
+ * - Value (LogFieldValue): 12 bytes [0 bytes dynamic allocation]
+ * Total Memory: 20 bytes [0 bytes dynamic allocation]
+ * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
+ * Confidence: medium; compile-time sizeof on the concrete target remains authoritative for ABI-sensitive/opaque members.
+ * End ESPressio Memory Audit
+ */
 struct LogField {
     std::string_view Name{};
     LogFieldValue Value{};
 };
 
+/**
+ * ESPressio Memory Audit
+ * Members:
+ * - Data (LogField*): 4 bytes [0 bytes dynamic allocation]
+ * - Count (std::size_t): 4 bytes [0 bytes dynamic allocation]
+ * Total Memory: 8 bytes [0 bytes dynamic allocation]
+ * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
+ * End ESPressio Memory Audit
+ */
 struct LogFieldView {
     const LogField* Data = nullptr;
     std::size_t Count = 0;

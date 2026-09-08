@@ -5,6 +5,18 @@
 using namespace ESPressio::Logging;
 
 namespace {
+/**
+ * ESPressio Memory Audit
+ * Inherited Memory Total: 4 bytes [0 bytes dynamic allocation]
+ * Members:
+ * - Mask (LogLevelMask): 1 bytes [0 bytes dynamic allocation]
+ * - Accepted (std::size_t): 4 bytes [0 bytes dynamic allocation]
+ * - ExpectedMessagePointer (char*): 4 bytes [0 bytes dynamic allocation]
+ * - ExpectedMetadataPointer (LogField*): 4 bytes [0 bytes dynamic allocation]
+ * Total Memory: 20 bytes [0 bytes dynamic allocation]
+ * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
+ * End ESPressio Memory Audit
+ */
 class TestSink final : public ILogSink {
 public:
     LogLevelMask Mask = AllLogLevels;
@@ -20,6 +32,16 @@ public:
     }
 };
 
+/**
+ * ESPressio Memory Audit
+ * Inherited Memory Total: 4 bytes [0 bytes dynamic allocation]
+ * Members:
+ * - Registered (std::size_t): 4 bytes [0 bytes dynamic allocation]
+ * - Unregistered (std::size_t): 4 bytes [0 bytes dynamic allocation]
+ * Total Memory: 12 bytes [0 bytes dynamic allocation]
+ * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
+ * End ESPressio Memory Audit
+ */
 class TestLoggingObserver final : public ILoggingObserver {
 public:
     std::size_t Registered = 0;
@@ -28,6 +50,15 @@ public:
     void OnLogSinkUnregistered(ILogSink*) override { ++Unregistered; }
 };
 
+/**
+ * ESPressio Memory Audit
+ * Inherited Memory Total: 12 bytes [0 bytes dynamic allocation]
+ * Members:
+ * - _view (LogRecordView): 56 bytes [0 bytes dynamic allocation]
+ * Total Memory: 68 bytes [0 bytes dynamic allocation]
+ * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
+ * End ESPressio Memory Audit
+ */
 class DurableRecord final : public SharedLogRecord<DurableRecord> {
 public:
     DurableRecord() {

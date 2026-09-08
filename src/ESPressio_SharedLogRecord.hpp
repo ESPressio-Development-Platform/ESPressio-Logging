@@ -13,6 +13,13 @@
 namespace ESPressio::Logging {
 
 /// <summary>Intrusively shareable durable log-record contract for data that may cross temporal boundaries.</summary>
+/**
+ * ESPressio Memory Audit
+ * Members: none; polymorphic/virtual-base object metadata is included in the total.
+ * Total Memory: 4 bytes [0 bytes dynamic allocation]
+ * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
+ * End ESPressio Memory Audit
+ */
 class ISharedLogRecord {
 public:
     virtual ~ISharedLogRecord() = default;
@@ -22,6 +29,14 @@ public:
 };
 
 /// <summary>RAII intrusive reference to one durable log record; copying the handle shares ownership without copying payload data.</summary>
+/**
+ * ESPressio Memory Audit
+ * Members:
+ * - _record (ISharedLogRecord*): 4 bytes [0 bytes dynamic allocation]
+ * Total Memory: 4 bytes [0 bytes dynamic allocation]
+ * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
+ * End ESPressio Memory Audit
+ */
 class SharedLogRecordHandle {
 public:
     SharedLogRecordHandle() noexcept = default;
@@ -56,6 +71,16 @@ private:
 
 /// <summary>CRTP base providing Event-style intrusive lifetime with ESPressio-System policy-aware deallocation.</summary>
 /// <remarks>Concrete records deriving from this type must be created with MakeSharedLogRecord so allocation and destruction use the same System memory provider.</remarks>
+/**
+ * ESPressio Memory Audit
+ * Inherited Memory Total: 4 bytes [0 bytes dynamic allocation]
+ * Members:
+ * - _referenceCount (std::atomic<uint32_t>): 4 bytes [0 bytes dynamic allocation]
+ * - _provider (System::Memory::IMemoryProvider*): 4 bytes [0 bytes dynamic allocation]
+ * Total Memory: 12 bytes [0 bytes dynamic allocation]
+ * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
+ * End ESPressio Memory Audit
+ */
 template<
     typename TDerived,
     System::Memory::MemoryPolicy TMemoryPolicy = System::Memory::MemoryPolicy::ExternalPreferred
@@ -130,6 +155,15 @@ SharedLogRecordHandle MakeSharedLogRecord(TArgs&&... args) {
 }
 
 /// <summary>Dispatch-time record wrapper. Its view is always borrowed; Retain is possible only when a durable owner was supplied.</summary>
+/**
+ * ESPressio Memory Audit
+ * Members:
+ * - _view (LogRecordView*): 4 bytes [0 bytes dynamic allocation]
+ * - _owner (ISharedLogRecord*): 4 bytes [0 bytes dynamic allocation]
+ * Total Memory: 8 bytes [0 bytes dynamic allocation]
+ * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
+ * End ESPressio Memory Audit
+ */
 class LogRecordLease {
 public:
     explicit LogRecordLease(const LogRecordView& record) noexcept : _view(&record) {}
