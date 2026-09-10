@@ -22,20 +22,7 @@
 namespace ESPressio::Logging {
 
 /// <summary>Thread-safe, allocation-free routing table that fans one record out to zero or more Sinks.</summary>
-/**
- * ESPressio Memory Audit
- * Members:
- * - _sinks (std::array<ILogSink*, ESPRESSIO_LOGGING_MAX_SINKS>): 4 bytes [0 bytes dynamic allocation]
- * - _categoryOverrides (std::array<CategoryOverride, ESPRESSIO_LOGGING_MAX_CATEGORY_OVERRIDES>): ESPRESSIO_LOGGING_MAX_CATEGORY_OVERRIDES * (12 bytes) [0 bytes dynamic allocation]
- * - _sinkCount (std::atomic<std::size_t>): 4 bytes [0 bytes dynamic allocation]
- * - _globalMask (std::atomic<LogLevelMask>): 1 bytes [0 bytes dynamic allocation]
- * - _stateLock (System::Synchronization::ReadWriteLock): 20 bytes [_owned: owned object: 4 bytes; _fallback: _mutex: native synchronization state may allocate platform resources lazily]
- * - _observable (std::shared_ptr<LoggingObservable>): 8 bytes [shared control block (~12+ bytes; allocate_shared may co-locate object) + object 96 bytes; pointee: ThreadSafeObservable: Observable: IUntypedObservable: IObservable: enable_shared_from_this: embedded weak_ptr shares a control block when activated; pointee: ThreadSafeObservable: Observable: IUntypedObservable: IObservable: _lifetimeControl: shared control block (~12+ bytes; allocate_shared may co-locate object) + object 20 bytes; pointee: ThreadSafeObservable: Observable: IUntypedObservable: IObservable: _lifetimeControl: pointee: _mutex: native synchronization state may allocate platform resources lazily; pointee: ThreadSafeObservable: Observable: IUntypedObservable: IObservable: _lifetimeControl: pointee: _condition: native condition-variable state may allocate platform synchronization resources; pointee: ThreadSafeObservable: Observable: _registrations: Capacity * (12 bytes) element storage; pointee: ThreadSafeObservable: Observable: _bindings: Capacity * (12 bytes) element storage; pointee: ThreadSafeObservable: _mutex: _owned: owned object: 4 bytes; pointee: ThreadSafeObservable: _mutex: _fallback: _mutex: native synchronization state may allocate platform resources lazily; pointee: ThreadSafeObservable: _notificationMutex: _owned: owned object: 4 bytes; pointee: ThreadSafeObservable: _notificationMutex: _fallback: _mutex: native synchronization state may allocate platform resources lazily]
- * Total Memory: 40 bytes known/aligned storage + ESPRESSIO_LOGGING_MAX_CATEGORY_OVERRIDES * (12 bytes) [_stateLock: _owned: owned object: 4 bytes; _stateLock: _fallback: _mutex: native synchronization state may allocate platform resources lazily; _observable: shared control block (~12+ bytes; allocate_shared may co-locate object) + object 96 bytes; _observable: pointee: ThreadSafeObservable: Observable: IUntypedObservable: IObservable: enable_shared_from_this: embedded weak_ptr shares a control block when activated; _observable: pointee: ThreadSafeObservable: Observable: IUntypedObservable: IObservable: _lifetimeControl: shared control block (~12+ bytes; allocate_shared may co-locate object) + object 20 bytes; _observable: pointee: ThreadSafeObservable: Observable: IUntypedObservable: IObservable: _lifetimeControl: pointee: _mutex: native synchronization state may allocate platform resources lazily; _observable: pointee: ThreadSafeObservable: Observable: IUntypedObservable: IObservable: _lifetimeControl: pointee: _condition: native condition-variable state may allocate platform synchronization resources; _observable: pointee: ThreadSafeObservable: Observable: _registrations: Capacity * (12 bytes) element storage; _observable: pointee: ThreadSafeObservable: Observable: _bindings: Capacity * (12 bytes) element storage; _observable: pointee: ThreadSafeObservable: _mutex: _owned: owned object: 4 bytes; _observable: pointee: ThreadSafeObservable: _mutex: _fallback: _mutex: native synchronization state may allocate platform resources lazily; _observable: pointee: ThreadSafeObservable: _notificationMutex: _owned: owned object: 4 bytes; _observable: pointee: ThreadSafeObservable: _notificationMutex: _fallback: _mutex: native synchronization state may allocate platform resources lazily]
- * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
- * Confidence: low; compile-time sizeof on the concrete target remains authoritative for ABI-sensitive/opaque members.
- * End ESPressio Memory Audit
- */
+
 class LogRouter {
 public:
     LogRouter() : _observable(CreateLoggingObservable()) {}
@@ -155,16 +142,7 @@ public:
     std::shared_ptr<LoggingObservable> GetObservable() const noexcept { return _observable; }
 
 private:
-/**
- * ESPressio Memory Audit
- * Members:
- * - Category (LogCategoryId): 8 bytes [0 bytes dynamic allocation]
- * - Mask (LogLevelMask): 1 bytes [0 bytes dynamic allocation]
- * - InUse (bool): 1 bytes [0 bytes dynamic allocation]
- * Total Memory: 12 bytes [0 bytes dynamic allocation]
- * Basis: ESP32/Xtensa ILP32 reference ABI (4-byte pointers/size_t); ESPressio stateful allocators/deleters included; ABI-sensitive STL/platform internals are identified explicitly.
- * End ESPressio Memory Audit
- */
+
 struct CategoryOverride {
         LogCategoryId Category = 0;
         LogLevelMask Mask = AllLogLevels;
